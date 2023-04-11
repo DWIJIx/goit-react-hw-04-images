@@ -18,6 +18,10 @@ export const ImageGallery = ({ searchText }) => {
     if (searchText.trim() === '') {
       return;
     }
+    setStatus('pending');
+    setPage(1);
+    setImages([]);
+
     fetchApi(searchText.trim(), 1)
       .then(data => {
         if (data.total === 0) {
@@ -71,6 +75,7 @@ export const ImageGallery = ({ searchText }) => {
     //   toast.error('Sorry, no more photos');
     //   return;
     // }
+
     fetchApi(searchText.trim(), page + 1)
       .then(data => {
         setStatus('resolved');

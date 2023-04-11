@@ -1,45 +1,50 @@
-import { Component } from 'react';
+import { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Overlay, ModalDiv } from './Modal.styled';
 import { createPortal } from 'react-dom';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export class Modal extends Component {
+export const Modal = ({ image, onClose }) => {
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown);
+    console.log('UseEffect');
+  });
+
   // Ставимо слухача, коли модалка змонтована
-  componentDidMount() {
-    window.addEventListener('keydown', this.handleKeyDown);
-  }
-  // Знімаємо слухача, коли модалка розмонтована
-  componentWillUnmount() {
-    window.removeEventListener('keydown', this.handleKeyDown);
-  }
+  // componentDidMount() {
+  //   window.addEventListener('keydown', this.handleKeyDown);
+  // }
+  // // Знімаємо слухача, коли модалка розмонтована
+  // componentWillUnmount() {
+  //   window.removeEventListener('keydown', this.handleKeyDown);
+  // }
   //   Метод закриття модалки по кліку на ескейп
-  handleKeyDown = event => {
+  const handleKeyDown = event => {
     if (event.code === 'Escape') {
-      //   console.log('Find Escape');
-      this.props.onClose();
+      // console.log('Find Escape');
+      window.removeEventListener('keydown', handleKeyDown);
+      onClose();
     }
   };
   //   Метод закриття модалки по кліку на бекроп
-  handleBackdropClick = event => {
+  const handleBackdropClick = event => {
     if (event.currentTarget === event.target) {
-      this.props.onClose();
+      window.removeEventListener('keydown', handleKeyDown);
+      onClose();
     }
   };
 
-  render() {
-    const { largeImageURL, tags } = this.props.image;
-    return createPortal(
-      <Overlay onClick={this.handleBackdropClick}>
-        <ModalDiv>
-          <img src={largeImageURL} alt={tags} />
-        </ModalDiv>
-      </Overlay>,
-      modalRoot
-    );
-  }
-}
+  const { largeImageURL, tags } = image;
+  return createPortal(
+    <Overlay onClick={handleBackdropClick}>
+      <ModalDiv>
+        <img src={largeImageURL} alt={tags} />
+      </ModalDiv>
+    </Overlay>,
+    modalRoot
+  );
+};
 
 Modal.propTypes = {
   onClose: PropTypes.func.isRequired,

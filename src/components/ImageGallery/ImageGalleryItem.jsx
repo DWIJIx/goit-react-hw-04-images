@@ -1,43 +1,33 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { Img } from './ImageGalleryItem.styled';
 import { Modal } from 'components/Modal/Modal.jsx';
 import PropTypes from 'prop-types';
 
-export class ImageGalleryItem extends Component {
-  state = {
-    showModal: false,
-    image: {},
+export const ImageGalleryItem = ({ imageObj }) => {
+  const [showModal, setshowModal] = useState(false);
+  const [image, setImage] = useState({});
+  // console.log(imageObj);
+
+  const openModal = image => {
+    // console.log(image);
+    setshowModal(true);
+    setImage(image);
   };
 
-  openModal = image => {
-    // console.log(image.largeImageURL);
-    this.setState({
-      showModal: true,
-      image,
-    });
+  const closeModal = () => {
+    setshowModal(false);
+    setImage({});
   };
 
-  closeModal = () => {
-    this.setState({
-      showModal: false,
-      image: {},
-    });
-  };
-  render() {
-    const { webformatURL, tags } = this.props.image;
-    const { showModal, image } = this.state;
-    return (
-      <>
-        <Img
-          src={webformatURL}
-          alt={tags}
-          onClick={() => this.openModal(this.props.image)}
-        />
-        {showModal && <Modal image={image} onClose={this.closeModal} />}
-      </>
-    );
-  }
-}
+  const { webformatURL, tags } = imageObj;
+
+  return (
+    <>
+      <Img src={webformatURL} alt={tags} onClick={() => openModal(imageObj)} />
+      {showModal && <Modal image={image} onClose={closeModal} />}
+    </>
+  );
+};
 
 ImageGalleryItem.propTypes = {
   image: PropTypes.shape({
